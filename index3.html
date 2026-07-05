@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>🍂 Love Letter on a Leaf</title>
+
+<style>
+  :root{
+    --bg1:#1b120e;
+    --bg2:#0f0a08;
+    --ink:#2a1b12;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+    color:var(--ink);
+    font-family: "Bradley Hand","Segoe Print","Apple Chancery","Comic Sans MS",cursive;
+
+    background:
+      radial-gradient(900px 650px at 20% 10%, rgba(255,180,120,.30), transparent 60%),
+      radial-gradient(900px 650px at 80% 20%, rgba(255,220,170,.22), transparent 55%),
+      radial-gradient(900px 650px at 50% 90%, rgba(150,70,50,.22), transparent 60%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+  }
+
+  /* Falling leaves layer */
+  .falling{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+  }
+  .leaf-fall{
+    position:absolute;
+    top:-12vh;
+    left:var(--l);
+    width:var(--s);
+    height:var(--s);
+    opacity:.85;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,.25));
+    animation: fall var(--d) linear infinite;
+    transform: rotate(var(--r));
+  }
+  @keyframes fall{
+    0%   { transform: translateY(-12vh) translateX(0) rotate(0deg); opacity:0; }
+    10%  { opacity:.85; }
+    50%  { transform: translateY(55vh) translateX(60px) rotate(180deg); }
+    100% { transform: translateY(112vh) translateX(-40px) rotate(360deg); opacity:0; }
+  }
+
+  /* Center container */
+  .center{
+    position:relative;
+    z-index:1;
+    width:min(1000px, 96vw);
+    padding: 24px 16px;
+    display:grid;
+    place-items:center;
+  }
+
+  /* Highlights button */
+  .hi-btn{
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.35);
+    color: rgba(255,255,255,.92);
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+  }
+  .hi-btn:hover{ background: rgba(0,0,0,.45); }
+
+  /* Secret toast */
+  .secret{
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%) translateY(18px);
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.45);
+    border: 1px solid rgba(255,255,255,.16);
+    color: rgba(255,255,255,.92);
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    text-align: center;
+    max-width: 92vw;
+  }
+  .secret.show{
+    opacity: 1;
+    transform: translateX(-50%) translateY(0px);
+  }
+
+  /* Leaf */
+  .big-leaf{
+    width: min(1000px, 96vw);
+    aspect-ratio: 16 / 9;
+    position: relative;
+    margin: 0 auto;
+
+    transition:
+      transform 1.2s cubic-bezier(.2,.9,.2,1),
+      filter 1.2s ease;
+    cursor: pointer;
+  }
+
+  /* Letter overlay (single source of truth) */
+  .letter{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 62%;
+    max-width: 560px;
+    transform: translate(-50%, -50%);
+    text-align: left;
+
+    display:flex;
+    flex-direction:column;
+    gap: 8px;
+    line-height: 1.45;
+
+    font-size: clamp(12px, 1.35vw, 18px);
+    color: rgba(42,27,18,.9);
+    z-index: 5;
+    pointer-events: none;
+
+    transition:
+      opacity .9s ease .35s,
+      transform .9s ease .35s;
+  }
+
+  .letter .dear{
+    font-size: clamp(18px, 2.0vw, 26px);
+    margin-bottom: 2px;
+  }
+
+  .letter .sig{
+    margin-top: 6px;
+    font-size: clamp(18px, 2.0vw, 26px);
+  }
+
+  /* Crumpled state */
+  .big-leaf.crumpled{
+    transform: scale(0.92) rotate(-2deg) skewX(1deg) skewY(-1deg);
+    filter: drop-shadow(0 30px 40px rgba(0,0,0,.45)) contrast(1.05);
+  }
+  .big-leaf.crumpled svg{
+    filter:
+      drop-shadow(-8px 6px 0 rgba(0,0,0,.08))
+      drop-shadow(6px -6px 0 rgba(255,255,255,.12));
+  }
+  .big-leaf.crumpled .letter{
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.96);
+  }
+
+  /* Uncrumpled state */
+  .big-leaf.uncrumpled{
+    transform: none;
+    filter: drop-shadow(0 18px 30px rgba(0,0,0,.35));
+  }
+  .big-leaf.uncrumpled svg{ filter:none; }
+  .big-leaf.uncrumpled .letter{
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .big-leaf.uncrumpled{
+  transform: scale(1.4);
+}
+
+
+
+.big-leaf.uncrumpled .letter{
+  transform: translate(-40%, -50%) scale(0.65);
+  transform-origin: center;
+}
+
+
+
+
+
+
+
+  /* Mobile tweaks */
+  @media (max-width: 520px){
+    .letter{
+      width: 72%;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <!-- Falling leaves -->
+  <div class="falling" aria-hidden="true" id="falling"></div>
+
+  <!-- Highlights -->
+  <button class="hi-btn" id="hiBtn">✨ Highlights</button>
+
+  <main class="center">
+    <!-- Leaf -->
+    <div class="big-leaf crumpled" id="leafWrap" aria-label="Autumn leaf letter">
+      <svg viewBox="0 0 1200 750" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ffbf6b"/>
+            <stop offset=".45" stop-color="#d96b2b"/>
+            <stop offset="1" stop-color="#b5442e"/>
+          </linearGradient>
+          <radialGradient id="shine" cx="30%" cy="25%" r="70%">
+            <stop offset="0" stop-color="rgba(255,255,255,.35)"/>
+            <stop offset=".35" stop-color="rgba(255,255,255,.10)"/>
+            <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+          </radialGradient>
+          <filter id="softShadow" x="-25%" y="-25%" width="150%" height="150%">
+            <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="rgba(0,0,0,.35)"/>
+          </filter>
+        </defs>
+
+        <!-- Leaf shape -->
+        <path filter="url(#softShadow)" fill="url(#leafGrad)"
+          d="M235,520
+             C210,350 330,210 510,150
+             C690,90 885,120 1010,220
+             C1120,310 1128,438 1040,540
+             C950,645 770,675 585,640
+             C410,610 275,620 235,520 Z"/>
+
+        <!-- Vein -->
+        <path d="M300,600 C520,450 700,330 950,220"
+              stroke="rgba(40,20,14,.35)" stroke-width="16" stroke-linecap="round" fill="none"/>
+
+        <!-- Side veins -->
+        <path d="M520,450 C480,410 430,380 380,350"
+              stroke="rgba(40,20,14,.22)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M620,395 C650,360 700,330 760,300"
+              stroke="rgba(40,20,14,.20)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M720,335 C760,310 815,280 875,250"
+              stroke="rgba(40,20,14,.18)" stroke-width="7" stroke-linecap="round" fill="none"/>
+
+        <!-- Shine overlay -->
+        <path fill="url(#shine)" opacity=".85"
+          d="M245,505
+             C240,360 360,230 520,175
+             C670,125 850,140 980,235
+             C835,240 720,300 600,390
+             C470,485 380,560 245,505 Z"/>
+      </svg>
+
+      <!-- Letter -->
+      <div class="letter" id="letter">
+        <div class="dear">My Princess,</div>
+
+        <div>
+          Funny how it all started on an inventory night, that special pizza slice.
+          I never expected the spark that night to light a fuse in our lives that would be burning on 3 years later.
+        </div>
+
+        <div>
+          Months go by, tiffins becomes a monthly tradition  one I looked forward to more than anything.
+          And a special day to Leeds to confirm our suspicions.
+          Those little moments looking into your eyes and seeing that beautiful smile which is unmatched nothing comes close to it.
+        </div>
+
+        <div>
+          It’s been lots of randomness, laughter and fun spending Octobers together enjoying movies —
+          and I can’t wait to do it daily.
+          Us two together is how it should be forever. Making memories and living our dream lives!
+        </div>
+
+        <div class="sig">Always yours, <br>— W</div>
+      </div>
+    </div>
+  </main>
+
+  <div class="secret" id="secretMsg">I hope you smile reading this.</div>
+
+<script>
+  // Falling leaves generator
+  const falling = document.getElementById("falling");
+  const colors = ["#ffbf6b","#f2a23b","#d96b2b","#c64a2d","#b5442e"];
+
+  function leafSVG(color){
+    return `
+      <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true">
+        <path d="M52 10c-9 1-18 5-24 12C22 29 16 41 16 54c13 0 25-6 32-12 7-6 12-15 13-24C62 10 56 9 52 10z" fill="${color}"/>
+        <path d="M18 52c14-12 24-24 34-38" stroke="rgba(0,0,0,.22)" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    `;
+  }
+
+  const COUNT = 18;
+  for(let i=0;i<COUNT;i++){
+    const el = document.createElement("div");
+    el.className = "leaf-fall";
+    const size = Math.floor(18 + Math.random()*34) + "px";
+    el.style.setProperty("--s", size);
+    el.style.setProperty("--l", Math.floor(Math.random()*100) + "%");
+    el.style.setProperty("--d", (10 + Math.random()*10).toFixed(2) + "s");
+    el.style.setProperty("--r", (Math.random()*60 - 30).toFixed(1) + "deg");
+    el.innerHTML = leafSVG(colors[Math.floor(Math.random()*colors.length)]);
+    el.style.animationDelay = (-Math.random()*12).toFixed(2) + "s";
+    falling.appendChild(el);
+  }
+
+  // Secret toast
+  const secretMsg = document.getElementById("secretMsg");
+  function popSecret(){
+    secretMsg.classList.add("show");
+    clearTimeout(window.__secretT);
+    window.__secretT = setTimeout(() => secretMsg.classList.remove("show"), 1800);
+  }
+
+  // Crumple -> uncrumple
+  const leafWrap = document.getElementById("leafWrap");
+  let opened = false;
+
+  function uncrumple(){
+    if(opened) return;
+    opened = true;
+
+    leafWrap.classList.remove("crumpled");
+    leafWrap.classList.add("uncrumpled");
+
+    setTimeout(popSecret, 700);
+  }
+
+  // Click leaf shows secret too
+  leafWrap.addEventListener("click", () => { popSecret(); uncrumple(); });
+
+  // Click anywhere (first click) uncrumples
+  document.addEventListener("click", uncrumple, { once:true });
+
+  // Highlights button (don’t trigger uncrumple click)
+  document.getElementById("hiBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    window.location.href = "highlights.html";
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Merlin Quiz — Trials of Camelot</title>
+
+<style>
+:root{
+  --paper:#f4ead1;
+  --paper2:#e6d3a3;
+  --ink:#1b1a14;
+  --gold:#c7a24a;
+  --gold2:#8f6e22;
+  --shadow:rgba(0,0,0,.45);
+  --good:#1f9d4c;
+  --bad:#c0262d;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family: Georgia, "Times New Roman", serif;
+  color:var(--ink);
+
+  /* CAM ELOT CASTLE BACKGROUND */
+  background:
+    linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.85)),
+    url("camelot merlin bbs tv series location 1.jpg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+  min-height:100vh;
+}
+
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:20px 14px 60px;
+}
+
+/* HEADER */
+header{
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 24px 60px var(--shadow);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+/* MERLIN & ARTHUR GIF */
+.hero{
+  height:400px;
+  background:
+    linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.7)),
+    url("0ff7b83aafc9dd6ce908da21da94ec4f.gif");
+  background-size:cover;
+  background-position:center top;
+}
+
+.heroText{
+  padding:14px 16px;
+  background:rgba(0,0,0,.65);
+}
+
+h1{
+  margin:0;
+  color:#fff;
+  font-size:22px;
+}
+.sub{
+  font-size:13px;
+  color:rgba(255,255,255,.75);
+}
+
+/* CARD */
+.card{
+  margin-top:16px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 22px 60px var(--shadow);
+}
+
+.paper{
+  background:
+    radial-gradient(900px 500px at 30% 0%, rgba(255,255,255,.35), transparent 60%),
+    linear-gradient(180deg, var(--paper), var(--paper2));
+  padding:18px;
+}
+
+/* BUTTON */
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:12px 18px;
+  font-weight:800;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#1b1a14;
+  box-shadow:0 16px 35px rgba(0,0,0,.25);
+}
+.btn:hover{filter:brightness(1.05)}
+
+/* QUIZ */
+.progress{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-bottom:10px;
+}
+.bar{
+  height:10px;
+  background:rgba(0,0,0,.12);
+  border-radius:999px;
+  overflow:hidden;
+  margin-bottom:14px;
+}
+.bar div{
+  height:100%;
+  background:linear-gradient(90deg,var(--gold2),var(--gold));
+}
+
+.q{
+  font-size:18px;
+  margin-bottom:12px;
+}
+
+.answers{
+  display:grid;
+  gap:10px;
+}
+
+.ans{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(0,0,0,.14);
+  background:rgba(255,255,255,.7);
+  cursor:pointer;
+}
+.ans:hover{border-color:rgba(143,110,34,.5)}
+
+.review{
+  display:grid;
+  gap:12px;
+  margin-top:16px;
+}
+
+.rev{
+  background:rgba(255,255,255,.7);
+  border-radius:14px;
+  padding:12px;
+  border:1px solid rgba(0,0,0,.14);
+}
+
+.tag{
+  font-size:12px;
+  padding:2px 8px;
+  border-radius:999px;
+  margin-left:8px;
+}
+.good{background:rgba(31,157,76,.15)}
+.bad{background:rgba(192,38,45,.15)}
+
+.sword{
+  margin-top:18px;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,.18);
+}
+.sword img{width:100%;display:block}
+
+.panelBox{
+  margin-top:16px;
+  padding:16px;
+  border-radius:16px;
+  background:
+    radial-gradient(600px 300px at 30% 0%, rgba(255,255,255,.35), transparent 60%),
+    linear-gradient(180deg, var(--paper), var(--paper2));
+  border:1px solid rgba(0,0,0,.12);
+}
+
+@media (max-width: 600px){
+  .answers { gap: 14px; }
+}
+
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header>
+  <div class="hero"></div>
+  <div class="heroText">
+    <h1>Merlin Quiz — The Trials of Camelot</h1>
+    <div class="sub">In a land of myth… and a time of magic…</div>
+  </div>
+</header>
+
+<section class="card">
+  <div class="paper" id="app"></div>
+</section>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"What is the exact name given to Merlin by the Great Dragon in prophecy?",c:["Emrys","Myrddin","Albion","Dragoon"],a:0},
+  {q:"Which episode first confirms Morgana has magic?",c:["The Beginning of the End","The Nightmare Begins","The Crystal Cave","The Gates of Avalon"],a:1},
+  {q:"Who originally forged Excalibur in the series?",c:["A dragonlord","Uther Pendragon","A druid blacksmith","Merlin"],a:3},
+  {q:"What is the name of the dragon Merlin accidentally frees?",c:["Aithusa","Kilgharrah","Balor","Cendred"],a:1},
+  {q:"Which kingdom is ruled by Queen Annis?",c:["Essetir","Nemeth","Cendred","Caerleon"],a:0},
+
+  {q:"What disguise does Merlin use when he returns to Camelot as an old man?",c:["Emrys","Dragoon","Dolma","Taliesin"],a:1},
+  {q:"Which knight dies saving Arthur from a shade?",c:["Leon","Gwaine","Lancelot","Elyan"],a:2},
+  {q:"Who raises Mordred after the fall of the Druids?",c:["Merlin","Arthur","Iseldir","The druids of the White Mountains"],a:3},
+  {q:"What is the name of the island where Merlin meets the Fisher King?",c:["Avalon","Isle of the Blessed","Camlann","Nemeth"],a:1},
+  {q:"Which episode introduces the concept of the Dark Tower?",c:["The Coming of Arthur","The Darkest Hour","The Crystal Cave","The Wicked Day"],a:1},
+
+  {q:"What act ultimately seals Morgana’s full descent into darkness?",c:["Being betrayed by Merlin","Uther’s death","The Crystal Cave vision","Gwen’s imprisonment"],a:0},
+  {q:"Which spell does Merlin use to age himself into Dragoon?",c:["Time-weaving","Aging glamour","Dragonlord magic","Sorcerer’s veil"],a:1},
+  {q:"Who is the first person Arthur ever knighted?",c:["Leon","Lancelot","Gwaine","Percival"],a:1},
+  {q:"Which creature guards the Cup of Life?",c:["A dragon","A knight shade","A serpent","A griffin"],a:2},
+  {q:"What does the Crystal Cave primarily show?",c:["The past","Possible futures","Only deaths","Alternate realities"],a:1},
+
+  {q:"Who kills Uther Pendragon?",c:["Morgana","Merlin","Arthur","Illness accelerated by magic"],a:3},
+  {q:"Which prophecy is Merlin explicitly warned never to reveal to Arthur?",c:["Mordred’s destiny","Albion’s fall","Excalibur’s origin","Gwen’s betrayal"],a:0},
+  {q:"What role does Dolma serve in the narrative?",c:["A seer","Merlin’s disguise","A druid elder","A dragon priestess"],a:1},
+  {q:"Which knight dies protecting his sister Kara?",c:["Leon","Gwaine","Elyan","Percival"],a:2},
+  {q:"What is Aithusa’s defining characteristic?",c:["Fire-breathing","Golden scales","Stunted growth","Dark magic"],a:2},
+
+  {q:"Which kingdom repeatedly opposes Camelot politically?",c:["Nemeth","Essetir","Caerleon","Cendred"],a:0},
+  {q:"What is the true significance of Camlann?",c:["Arthur’s coronation","Albion’s birth","Arthur’s death","Morgana’s defeat"],a:2},
+  {q:"Who strikes the fatal blow against Arthur?",c:["Morgana","Mordred","Aithusa","Annis"],a:1},
+  {q:"Why does Merlin poison Morgana in Season 3?",c:["To test her magic","To kill her","To prevent her destiny","To weaken her powers"],a:2},
+  {q:"Which character betrays Camelot from within as a spy?",c:["Agravaine","Geoffrey","Leon","Percival"],a:0},
+
+  {q:"What final role does Merlin accept after Arthur’s death?",c:["King of Albion","Guardian of Excalibur","Last Dragonlord","Court sorcerer"],a:1},
+  {q:"Where is Arthur taken after his death?",c:["Avalon","Isle of the Blessed","Ealdor","Camelot"],a:0},
+  {q:"What tragic truth defines Merlin’s destiny?",c:["He saves Arthur","He outlives Arthur","He becomes king","He loses his magic"],a:1},
+  {q:"In the final scene, what era does Merlin live in?",c:["Medieval","Renaissance","Modern day","Victorian"],a:2},
+];
+
+
+
+const app = document.getElementById("app");
+let idx=0, score=0, answers=[];
+
+function shuffle(a){return a.sort(()=>Math.random()-0.5)}
+const quiz = shuffle([...QUESTIONS]);
+
+function renderStart(){
+  app.innerHTML=`
+    <div class="panelBox">
+      <h2>Welcome, traveller.</h2>
+      <p>Test your knowledge of <b>Merlin</b>. One quest. One path.</p>
+      <button class="btn" onclick="renderQ()">Start Quiz</button>
+    </div>
+
+    <div class="panelBox">
+      <h2>Dear Quiztaker,</h2>
+      <p>
+        This is made pacifically for aasiya the most special person in the world! 
+      </p>
+      <p>Carpe Diem!</p>
+    </div>
+  `;
+}
+
+
+
+
+
+function renderQ(){
+  const q=quiz[idx];
+  app.innerHTML=`
+    <div class="progress"><span>Trial ${idx+1}/${quiz.length}</span><span>Score ${score}</span></div>
+    <div class="bar"><div style="width:${(idx/quiz.length)*100}%"></div></div>
+    <div class="q">${q.q}</div>
+    <div class="answers">${q.c.map((x,i)=>`<div class="ans" onclick="pick(${i})">${x}</div>`).join("")}</div>
+  `;
+}
+
+function pick(i){
+  const q=quiz[idx];
+  const ok=i===q.a;
+  if(ok) score++;
+  answers.push({q:q.q,y:q.c[i],c:q.c[q.a],ok});
+  idx++;
+  idx<quiz.length?renderQ():renderEnd();
+}
+
+
+function renderEnd(){
+  app.innerHTML=`
+    <h2>Quest Complete</h2>
+    <p>Final score: <b>${score}/${quiz.length}</b></p>
+    <div class="review">${answers.map((r,i)=>`
+      <div class="rev">
+        <b>Trial ${i+1}:</b> ${r.q}
+        <span class="tag ${r.ok?"good":"bad"}">${r.ok?"Correct":"Wrong"}</span><br>
+        You chose: <b>${r.y}</b><br>
+        Correct: <b>${r.c}</b>
+      </div>`).join("")}
+    </div>
+    <div class="sword">
+      <img src="Merlin-The-Sword-in-the-Stone-600x337.jpg">
+    </div>
+    <button class="btn" onclick="location.reload()">End Quiz</button>
+  `;
+}
+
+renderStart();
+</script>
+</body>
+</html>

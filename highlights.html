@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>✨ Highlights</title>
+
+<style>
+  :root{
+    --bg1:#1b120e;
+    --bg2:#0f0a08;
+    --paper:#fff7ea;
+    --ink:#2a1b12;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    overflow:hidden;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    background:
+      radial-gradient(900px 650px at 20% 10%, rgba(255,180,120,.25), transparent 60%),
+      radial-gradient(900px 650px at 80% 20%, rgba(255,220,170,.18), transparent 55%),
+      radial-gradient(900px 650px at 50% 90%, rgba(150,70,50,.18), transparent 60%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+    color: rgba(255,255,255,.9);
+  }
+
+  .topbar{
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    z-index: 10;
+  }
+
+  .btn{
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.35);
+    color: rgba(255,255,255,.92);
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+  }
+  .btn:hover{ background: rgba(0,0,0,.45); }
+
+  .title{
+    font-weight: 800;
+    letter-spacing: .2px;
+    opacity: .95;
+  }
+
+  /* Scattered gallery canvas */
+  .canvas{
+    position: fixed;
+    inset: 0;
+    padding-top: 70px; /* space for topbar */
+  }
+
+  /* Polaroid cards */
+  .shot{
+    position: absolute;
+    width: clamp(140px, 18vw, 240px);
+    background: rgba(255,255,255,.92);
+    border-radius: 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    overflow:hidden;
+    border: 1px solid rgba(0,0,0,.12);
+    transform: translate(-50%, -50%) rotate(var(--rot));
+    left: var(--x);
+    top: var(--y);
+    user-select:none;
+    cursor: pointer;
+  }
+
+  .shot .img{
+    width:100%;
+    aspect-ratio: 4 / 3;
+    background: #ddd;
+    display:block;
+    object-fit: cover;
+  }
+
+  .cap{
+    padding: 10px 12px 12px;
+    color: var(--ink);
+    font-family: "Bradley Hand", "Segoe Print", "Apple Chancery", "Comic Sans MS", cursive;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  /* Lightbox */
+  .lightbox{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.78);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 999;
+    padding: 70px 16px 24px;
+  }
+  .lightbox.show{ display:flex; }
+
+  .lb-img{
+    max-width: min(920px, 92vw);
+    max-height: 72vh;
+    border-radius: 14px;
+    box-shadow: 0 24px 80px rgba(0,0,0,.55);
+    border: 1px solid rgba(255,255,255,.18);
+    background: #fff;
+  }
+  .lb-cap{
+    max-width: min(920px, 92vw);
+    color: rgba(255,255,255,.92);
+    font-family: "Bradley Hand","Segoe Print","Apple Chancery","Comic Sans MS",cursive;
+    font-size: 18px;
+    text-align: center;
+    opacity: .95;
+  }
+  .lb-close{
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.35);
+    color: rgba(255,255,255,.92);
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 800;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+  }
+  .lb-close:hover{ background: rgba(0,0,0,.45); }
+
+  /* mobile: allow scroll if needed */
+  @media (max-width: 640px){
+    body{ overflow:auto; }
+    .canvas{ position: relative; min-height: 120vh; }
+    .shot{ position: relative; transform: none; left: auto; top: auto; margin: 14px auto; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="topbar">
+    <button class="btn" onclick="window.location.href='index.html'">← Back</button>
+    <div class="title">✨ Our Highlights</div>
+    <button class="btn" id="shuffleBtn">↻ Shuffle</button>
+  </div>
+
+  <div class="canvas" id="canvas"></div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+    <img class="lb-img" id="lbImg" alt="">
+    <div class="lb-cap" id="lbCap"></div>
+  </div>
+
+<script>
+  const PHOTOS = [
+    { src: "IMG_5334.JPG", cap: "Thank you soooo much — I really appreciate it 💜" },
+    { src: "IMG_5335.JPG", cap: "drawn with love." },
+    { src: "IMG_5336.JPG", cap: "In a world of blinding lights, thank you for being my cozy lamp." },
+    { src: "IMG_5337.JPG", cap: "Something delicate, just like you my princess." },
+    { src: "IMG_5338.JPG", cap: "Folded with care. Will be treasured and kept forever." },
+    { src: "IMG_5339.JPG", cap: "A picture of a princess but nothing comes close to my real princess aasiya." },
+    { src: "IMG_5340.JPG", cap: "The perfect, comforting cup of tea I look forward to every day ☕" }
+  ];
+
+  const canvas = document.getElementById("canvas");
+  const shuffleBtn = document.getElementById("shuffleBtn");
+
+  // Lightbox elements
+  const lightbox = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lbImg");
+  const lbCap = document.getElementById("lbCap");
+  const lbClose = document.getElementById("lbClose");
+
+  function openLightbox(src, cap){
+    lbImg.src = src;
+    lbImg.alt = cap || "Highlight";
+    lbCap.textContent = cap || "";
+    lightbox.classList.add("show");
+    lightbox.setAttribute("aria-hidden", "false");
+  }
+
+  function closeLightbox(){
+    lightbox.classList.remove("show");
+    lightbox.setAttribute("aria-hidden", "true");
+    lbImg.src = "";
+  }
+
+  lbClose.addEventListener("click", closeLightbox);
+  lightbox.addEventListener("click", (e) => {
+    if(e.target === lightbox) closeLightbox();
+  });
+  window.addEventListener("keydown", (e) => {
+    if(e.key === "Escape") closeLightbox();
+  });
+
+  function layout(){
+    canvas.innerHTML = "";
+
+    // Safe spread positions (percentages)
+    const positions = [
+      { x: 15, y: 22 },
+      { x: 42, y: 18 },
+      { x: 68, y: 24 },
+      { x: 82, y: 42 },
+      { x: 60, y: 58 },
+      { x: 32, y: 62 },
+      { x: 14, y: 50 }
+    ];
+
+    PHOTOS.forEach((p, i) => {
+      const card = document.createElement("div");
+      card.className = "shot";
+
+      const base = positions[i % positions.length];
+
+      // Small organic randomness
+      const jitterX = (Math.random() * 6 - 3);
+      const jitterY = (Math.random() * 6 - 3);
+      const rot = (Math.random() * 18 - 9).toFixed(1) + "deg";
+
+      card.style.setProperty("--x", (base.x + jitterX) + "%");
+      card.style.setProperty("--y", (base.y + jitterY) + "%");
+      card.style.setProperty("--rot", rot);
+
+      const img = document.createElement("img");
+      img.className = "img";
+      img.src = p.src;
+      img.alt = p.cap;
+
+      const cap = document.createElement("div");
+      cap.className = "cap";
+      cap.textContent = p.cap;
+
+      img.onerror = () => {
+        img.remove();
+        const fallback = document.createElement("div");
+        fallback.className = "img";
+        fallback.style.background =
+          "linear-gradient(135deg, rgba(255,191,107,.9), rgba(181,68,46,.85))";
+        card.insertBefore(fallback, cap);
+      };
+
+      // ✅ Click to open full-screen
+      img.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openLightbox(p.src, p.cap);
+      });
+      // also allow clicking the card (not just image)
+      card.addEventListener("click", () => openLightbox(p.src, p.cap));
+
+      card.appendChild(img);
+      card.appendChild(cap);
+
+      // Bring to front when clicked
+      card.addEventListener("pointerdown", () => {
+        card.style.zIndex = String(100 + i);
+      });
+
+      canvas.appendChild(card);
+    });
+  }
+
+  shuffleBtn.addEventListener("click", layout);
+  window.addEventListener("resize", layout);
+  layout();
+</script>
+
+</body>
+</html>

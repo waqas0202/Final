@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sorry Aasiya 💐</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(to bottom right, #ffe6f2, #fff0f6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: "Poppins", sans-serif;
+    }
+
+    .bouquet {
+      width: 180px;
+      animation: popIn 1.2s ease forwards;
+      filter: drop-shadow(0 5px 10px rgba(255, 182, 193, 0.6));
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+      to { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      padding: 20px 30px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(255, 182, 193, 0.3);
+      border: 1px solid #ffd6e8;
+      max-width: 340px;
+      animation: fadeIn 1.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      color: #e75480;
+      margin-bottom: 10px;
+      font-size: 26px;
+    }
+
+    p {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #e89aae;
+      font-style: italic;
+    }
+
+    .biceps-link {
+      margin-top: 5px;
+      font-size: 18px;
+      color: #e75480;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease, color 0.3s ease;
+    }
+
+    .biceps-link:hover {
+      color: #ff69b4;
+      transform: scale(1.1);
+    }
+
+    .heart {
+      position: absolute;
+      color: pink;
+      font-size: 20px;
+      animation: floatUp 6s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const heartColors = ["#ffb6c1", "#ff69b4", "#ffc0cb", "#ff9bb3"];
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.innerHTML = "&#10084;";
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 4 + Math.random() * 4 + "s";
+      heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
+      heart.style.fontSize = 12 + Math.random() * 24 + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }
+    setInterval(createHeart, 400);
+  </script>
+
+  <img class="bouquet" src="https://cdn.pixabay.com/photo/2017/08/30/06/47/bouquet-2696214_1280.png" alt="" />
+  
+  <div class="card">
+    <h1>Dear Aasiya 💐</h1>
+    <p>
+      I'm really sorry.<br />
+      I didn’t mean to upset you.<br />
+      You’re special to me, and I hope this little page makes you smile 💕
+    </p>
+  </div>
+
+  <footer>– from someone who's obsessed with you 🌸</footer>
+
+  <footer class="biceps-link" onclick="openImage()">💪 BICEPS Apology Pictures 💪</footer>
+  <script>
+    function openImage() {
+      // 👇 change this to your actual file name (must be in the same folder)
+      window.open("biceps.png", "_blank");
+    }
+  </script>
+</body>
+</html>
+
+
